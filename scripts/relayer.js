@@ -2,6 +2,31 @@ require('dotenv').config();
 const { ethers } = require("ethers");
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
+
+// Health server for Render/UptimeRobot (keeps free tier alive)
+const PORT = process.env.PORT || 10000;
+let lastCheck = null;
+let isHealthy = true;
+
+const healthServer = http.createServer((req, res) => {
+    if (req.url === '/health' || req.url === '/') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+            status: isHealthy ? 'ok' : 'error',
+            service: 'recurve-relayer',
+            lastCheck: lastCheck,
+            uptime: process.uptime()
+        }));
+    } else {
+        res.writeHead(404);
+        res.end('Not found');
+    }
+});
+
+healthServer.listen(PORT, () => {
+    console.log(`🏥 Health server running on port ${PORT}`);
+});
 
 // Configuration from .env
 const RPC_URL = process.env.ARC_RPC_URL;
@@ -110,6 +135,8 @@ async function runRelayer() {
     const now = Math.floor(Date.now() / 1000);
 
     console.log(`\n--- Relayer Check: ${new Date().toLocaleString()} ---`);
+    lastCheck = new Date().toISOString();
+    isHealthy = true;
 
     // ===================
     // SMART RETRIES: Check failed payments first
