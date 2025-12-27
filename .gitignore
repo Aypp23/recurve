@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+dashboard/node_modules/
+
+# Environment files (NEVER commit these!)
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+out/
+dashboard/out/
+dashboard/.next/
+dashboard/build/
+
+# Logs
+*.log
+relayer.log
+
+# Relayer state
+.relayer_last_block
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+Thumbs.db
+
+# Large documentation files (scraped docs)
+privy.txt
+plimico.txt
+arc.txt
+
+# Debug/temp files
+*.tmp
+*.temp
+
+# Hardhat/Foundry artifacts (keep contracts/ but ignore build cache)
+cache/
+artifacts/
+
+# Relayer runtime data
+scripts/subscriptions.json
+scripts/failed_payments.json
+
+# Debug/utility scripts (not needed for production)
+scripts/find_owner.js
+scripts/check_*.js
+scripts/debug_*.js
+scripts/dump_*.js
+scripts/test_*.js
+scripts/verify_*.js
+scripts/aa_integration.js
+
+# Compiled contract outputs
+out/
