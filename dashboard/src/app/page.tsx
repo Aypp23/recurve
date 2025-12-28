@@ -804,11 +804,14 @@ export default function CheckoutPage() {
       return next.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     };
 
-    const getDaysUntilRenewal = (lastPaid: bigint, frequency: number) => {
+    const getMinutesUntilRenewal = (lastPaid: bigint, frequency: number) => {
       if (lastPaid === BigInt(0)) return 0;
       const next = (Number(lastPaid) + frequency) * 1000;
       const now = Date.now();
-      return Math.max(0, Math.ceil((next - now) / (1000 * 60 * 60 * 24)));
+      const minutesRemaining = Math.max(0, Math.ceil((next - now) / (1000 * 60)));
+      // Simulate 30-day cycle: 10 mins = 30 days, so multiply by 3
+      const simulatedDays = Math.ceil((minutesRemaining / 10) * 30);
+      return simulatedDays;
     };
 
     return (
@@ -852,11 +855,11 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 mb-1 uppercase tracking-wider font-medium">Renews in</p>
-                  <p className="font-semibold">{getDaysUntilRenewal(activeSubscription.lastPaid, 600)} days</p>
+                  <p className="font-semibold">{getMinutesUntilRenewal(activeSubscription.lastPaid, 600)} days</p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 mb-1 uppercase tracking-wider font-medium">Started</p>
-                  <p className="font-semibold">{new Date(Number(activeSubscription.lastPaid) * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                  <p className="font-semibold">{new Date(Number(activeSubscription.lastPaid) * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                 </div>
                 <div>
                   <p className="text-xs text-slate-500 mb-1 uppercase tracking-wider font-medium">Payment</p>
