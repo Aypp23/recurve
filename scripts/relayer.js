@@ -242,8 +242,8 @@ async function runRelayer() {
     for (let i = startBlock; i <= currentBlock; i += CHUNK_SIZE) {
         const toBlock = Math.min(i + CHUNK_SIZE - 1, currentBlock);
         try {
-            const filter = contract.filters.SubscriptionCreated();
-            const events = await contract.queryFilter(filter, i, toBlock);
+            const filter = httpContract.filters.SubscriptionCreated();
+            const events = await httpContract.queryFilter(filter, i, toBlock);
             if (events.length > 0) {
                 const discoveredIds = events.map(e => e.args.subId);
                 console.log(`  Found ${discoveredIds.length} new sub(s) at block ${i}`);
