@@ -877,7 +877,7 @@ export default function CheckoutPage() {
                 <button
                   onClick={() => handleCancel(activeSubscription.subId)}
                   disabled={!!cancellingSubId}
-                  className="px-5 py-2.5 border border-red-200 text-red-600 hover:bg-red-50 text-sm font-semibold rounded-lg transition-all flex items-center gap-2"
+                  className="px-5 py-2.5 border border-red-200 text-red-600 hover:bg-red-50 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2"
                 >
                   {cancellingSubId === activeSubscription.subId ? (
                     <><Loader2 className="w-4 h-4 animate-spin" /> Cancelling...</>
