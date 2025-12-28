@@ -647,7 +647,7 @@ export default function CheckoutPage() {
         {/* Right Column - Payment */}
         <div className="w-full md:w-[55%] p-4 sm:p-6 md:p-24 flex flex-col justify-center">
           <div className="max-w-md w-full mx-auto">
-            <h3 className="text-xl md:text-2xl font-bold mb-6 md:mb-8">Pay with Arc Wallet</h3>
+            <h3 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 pt-4 md:pt-0">Pay with Arc Wallet</h3>
 
             {!authenticated ? (
               <button
