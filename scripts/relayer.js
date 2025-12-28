@@ -41,7 +41,7 @@ if (!RPC_URL || !MANAGER_ADDRESS || !PRIVATE_KEY) {
 // Fallback RPC Support
 const RPC_URLS = [
     RPC_URL,
-    "https://testnet-rpc.arc.market" // Public fallback
+    "https://rpc.testnet.arc.network/" // Public fallback (supports 10k+ block ranges)
 ];
 
 // Smart Retry Configuration
