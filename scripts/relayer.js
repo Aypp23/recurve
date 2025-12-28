@@ -256,14 +256,81 @@ async function runRelayer() {
     }
 }
 
-// Check every 60 seconds with robustness
-async function main() {
+// WebSocket for real-time event listening
+const WS_URL = "wss://rpc.testnet.arc.network";
+let wsProvider = null;
+let wsContract = null;
+
+async function setupWebSocket() {
+    try {
+        console.log(`🔌 Connecting to WebSocket: ${WS_URL}...`);
+        wsProvider = new ethers.WebSocketProvider(WS_URL);
+
+        const abi = [
+            "event SubscriptionCreated(bytes32 indexed subId, address indexed subscriber, uint256 tierId)"
+        ];
+        wsContract = new ethers.Contract(MANAGER_ADDRESS, abi, wsProvider);
+
+        // Listen for new subscription events in real-time
+        wsContract.on("SubscriptionCreated", (subId, subscriber, tierId) => {
+            console.log(`⚡ NEW SUBSCRIPTION DETECTED (real-time)!`);
+            console.log(`   SubId: ${subId.slice(0, 20)}...`);
+            console.log(`   Subscriber: ${subscriber}`);
+            console.log(`   Tier: ${tierId}`);
+
+            // Add to subscriptions list
+            let subIdsToWatch = [];
+            if (fs.existsSync(SUBS_FILE)) {
+                try {
+                    subIdsToWatch = JSON.parse(fs.readFileSync(SUBS_FILE, 'utf8'));
+                } catch (e) { }
+            }
+
+            if (!subIdsToWatch.includes(subId)) {
+                subIdsToWatch.push(subId);
+                fs.writeFileSync(SUBS_FILE, JSON.stringify(subIdsToWatch, null, 2));
+                console.log(`   ✅ Added to watch list!`);
+            }
+        });
+
+        // Handle disconnects
+        wsProvider.websocket.on('close', () => {
+            console.log('⚠️ WebSocket disconnected, reconnecting in 5s...');
+            setTimeout(setupWebSocket, 5000);
+        });
+
+        wsProvider.websocket.on('error', (err) => {
+            console.error('WebSocket error:', err.message);
+        });
+
+        console.log(`✅ WebSocket connected! Listening for real-time events...`);
+    } catch (e) {
+        console.error(`WebSocket setup failed: ${e.message}`);
+        console.log('⏳ Will retry WebSocket in 30s...');
+        setTimeout(setupWebSocket, 30000);
+    }
+}
+
+// Polling fallback for checkUpkeep (still needed for payment processing)
+async function pollRelayer() {
     try {
         await runRelayer();
     } catch (err) {
-        console.error("Relayer crashed:", err.message);
+        console.error("Relayer poll error:", err.message);
     }
-    setTimeout(main, 60000);
+    // Poll every 30 seconds for payment processing
+    setTimeout(pollRelayer, 30000);
+}
+
+// Main entry point
+async function main() {
+    console.log('🚀 Starting Recurve Relayer with WebSocket + Polling...');
+
+    // Start WebSocket listener for instant event detection
+    await setupWebSocket();
+
+    // Start polling for payment processing
+    await pollRelayer();
 }
 
 main();
