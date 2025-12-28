@@ -14,8 +14,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                     accentColor: "#004D40",
                     // Logo is set in Privy Dashboard instead of code
                 },
-                // Enable email and social logins
-                loginMethods: ["email", "wallet", "google", "apple"],
+                // Enable email, wallet, Google, and passkey logins
+                loginMethods: ["email", "wallet", "google", "passkey"],
                 // Specific for Arc Network
                 supportedChains: [{
                     id: 5042002,
