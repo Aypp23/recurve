@@ -238,7 +238,7 @@ async function runRelayer() {
 
     console.log(`Scanning blocks ${startBlock} to ${currentBlock} for new events...`);
 
-    const CHUNK_SIZE = 10;
+    const CHUNK_SIZE = 1000; // WebSocket with filtered queries supports 1000+ blocks
     for (let i = startBlock; i <= currentBlock; i += CHUNK_SIZE) {
         const toBlock = Math.min(i + CHUNK_SIZE - 1, currentBlock);
         try {
