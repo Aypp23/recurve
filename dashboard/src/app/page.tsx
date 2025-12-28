@@ -598,17 +598,17 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-white flex flex-col md:flex-row font-sans text-[#1A1F36] antialiased">
         {/* Left Column - Summary */}
-        <div className="w-full md:w-[45%] bg-[#F7F8F9] p-6 md:p-24 flex flex-col justify-between">
+        <div className="w-full md:w-[45%] bg-[#F7F8F9] p-4 sm:p-6 md:p-24 flex flex-col justify-between">
           <div>
             <button
               onClick={() => setView('selection')}
-              className="flex items-center gap-2 text-gray-500 hover:text-black mb-12 transition-colors font-medium"
+              className="flex items-center gap-2 text-gray-500 hover:text-black mb-6 md:mb-12 transition-colors font-medium text-sm"
             >
               <ArrowLeft className="w-4 h-4" /> Back to plans
             </button>
 
-            <div className="flex items-center gap-2 mb-8">
-              <img src="/recurve-logo.png" alt="Recurve" className="w-8 h-8 rounded" />
+            <div className="flex items-center gap-2 mb-4 md:mb-8">
+              <img src="/recurve-logo.png" alt="Recurve" className="w-6 h-6 sm:w-8 sm:h-8 rounded" />
               <span className="font-bold tracking-tight">Recurve</span>
             </div>
 
@@ -618,9 +618,9 @@ export default function CheckoutPage() {
                 : `Subscribe to ${selectedTier.name}`
               }
             </h2>
-            <div className="flex items-baseline gap-1 mb-6 md:mb-8">
-              <span className="text-4xl md:text-5xl font-extrabold">${selectedTier.amount}.00</span>
-              <span className="text-gray-400 text-lg md:text-xl font-medium">per month</span>
+            <div className="flex items-baseline gap-1 mb-4 md:mb-8">
+              <span className="text-3xl sm:text-4xl md:text-5xl font-extrabold">${selectedTier.amount}.00</span>
+              <span className="text-gray-400 text-base sm:text-lg md:text-xl font-medium">per month</span>
             </div>
 
             <div className="space-y-4 pt-8 border-t border-gray-200">
@@ -645,7 +645,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* Right Column - Payment */}
-        <div className="w-full md:w-[55%] p-6 md:p-24 flex flex-col justify-center">
+        <div className="w-full md:w-[55%] p-4 sm:p-6 md:p-24 flex flex-col justify-center">
           <div className="max-w-md w-full mx-auto">
             <h3 className="text-xl md:text-2xl font-bold mb-6 md:mb-8">Pay with Arc Wallet</h3>
 
@@ -658,7 +658,7 @@ export default function CheckoutPage() {
               </button>
             ) : (
               <div className="space-y-6">
-                <div className="p-4 md:p-6 bg-[#F7F8F9] rounded-xl border border-gray-100">
+                <div className="p-3 sm:p-4 md:p-6 bg-[#F7F8F9] rounded-xl border border-gray-100">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-xs font-bold uppercase tracking-widest text-[#004D40]">Primary Wallet (EOA)</span>
                     <button onClick={logout} className="text-xs text-red-500 font-bold hover:underline">Sign out</button>
