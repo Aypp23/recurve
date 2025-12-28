@@ -800,8 +800,11 @@ export default function CheckoutPage() {
 
     const getNextBillingDate = (lastPaid: bigint, frequency: number) => {
       if (lastPaid === BigInt(0)) return 'Pending';
-      const next = new Date((Number(lastPaid) + frequency) * 1000);
-      return next.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      // Simulate: show next month from subscription date
+      const startDate = new Date(Number(lastPaid) * 1000);
+      const nextMonth = new Date(startDate);
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      return nextMonth.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     };
 
     const getMinutesUntilRenewal = (lastPaid: bigint, frequency: number) => {
