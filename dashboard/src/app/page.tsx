@@ -867,7 +867,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <div className="p-6 flex items-center justify-between">
+              <div className="p-4 sm:p-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                 <button
                   onClick={() => setView('selection')}
                   className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-lg transition-all"
