@@ -598,7 +598,7 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-white flex flex-col md:flex-row font-sans text-[#1A1F36] antialiased">
         {/* Left Column - Summary */}
-        <div className="w-full md:w-[45%] bg-[#F7F8F9] p-12 md:p-24 flex flex-col justify-between">
+        <div className="w-full md:w-[45%] bg-[#F7F8F9] p-6 md:p-24 flex flex-col justify-between">
           <div>
             <button
               onClick={() => setView('selection')}
@@ -618,9 +618,9 @@ export default function CheckoutPage() {
                 : `Subscribe to ${selectedTier.name}`
               }
             </h2>
-            <div className="flex items-baseline gap-1 mb-8">
-              <span className="text-5xl font-extrabold">${selectedTier.amount}.00</span>
-              <span className="text-gray-400 text-xl font-medium">per month</span>
+            <div className="flex items-baseline gap-1 mb-6 md:mb-8">
+              <span className="text-4xl md:text-5xl font-extrabold">${selectedTier.amount}.00</span>
+              <span className="text-gray-400 text-lg md:text-xl font-medium">per month</span>
             </div>
 
             <div className="space-y-4 pt-8 border-t border-gray-200">
@@ -645,9 +645,9 @@ export default function CheckoutPage() {
         </div>
 
         {/* Right Column - Payment */}
-        <div className="w-full md:w-[55%] p-12 md:p-24 flex flex-col justify-center">
+        <div className="w-full md:w-[55%] p-6 md:p-24 flex flex-col justify-center">
           <div className="max-w-md w-full mx-auto">
-            <h3 className="text-2xl font-bold mb-8">Pay with Arc Wallet</h3>
+            <h3 className="text-xl md:text-2xl font-bold mb-6 md:mb-8">Pay with Arc Wallet</h3>
 
             {!authenticated ? (
               <button
@@ -658,7 +658,7 @@ export default function CheckoutPage() {
               </button>
             ) : (
               <div className="space-y-6">
-                <div className="p-6 bg-[#F7F8F9] rounded-xl border border-gray-100">
+                <div className="p-4 md:p-6 bg-[#F7F8F9] rounded-xl border border-gray-100">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-xs font-bold uppercase tracking-widest text-[#004D40]">Primary Wallet (EOA)</span>
                     <button onClick={logout} className="text-xs text-red-500 font-bold hover:underline">Sign out</button>
