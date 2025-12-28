@@ -119,8 +119,8 @@ function clearFailure(failedPayments, subId) {
 }
 
 async function runRelayer() {
-    const provider = await getProvider();
-    const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+    const httpProvider = await getProvider();
+    const wallet = new ethers.Wallet(PRIVATE_KEY, httpProvider);
 
     const abi = [
         "function executePayment(bytes32 _subId)",
@@ -130,7 +130,14 @@ async function runRelayer() {
         "event SubscriptionPaid(bytes32 indexed subId, uint256 amount, uint256 timestamp)"
     ];
 
-    const contract = new ethers.Contract(MANAGER_ADDRESS, abi, wallet);
+    // HTTP contract for write operations (executePayment)
+    const httpContract = new ethers.Contract(MANAGER_ADDRESS, abi, wallet);
+
+    // WebSocket contract for read operations (checkUpkeep) - uses global wsProvider
+    const wsReadContract = wsProvider
+        ? new ethers.Contract(MANAGER_ADDRESS, abi, wsProvider)
+        : httpContract; // Fallback to HTTP if WebSocket not ready
+
     const failedPayments = loadFailedPayments();
     const now = Math.floor(Date.now() / 1000);
 
@@ -146,11 +153,11 @@ async function runRelayer() {
     );
 
     if (retryQueue.length > 0) {
-        console.log(`🔄 Retrying ${retryQueue.length} failed payment(s)...`);
+        console.log(`🔄 Retrying ${retryQueue.length} failed payments...`);
         for (const [subId, data] of retryQueue) {
             process.stdout.write(`- Retry #${data.failCount + 1} for ${subId.slice(0, 10)}... `);
             try {
-                const tx = await contract.executePayment(subId);
+                const tx = await httpContract.executePayment(subId);
                 console.log(`SUCCESS! Hash: ${tx.hash}`);
                 clearFailure(failedPayments, subId);
             } catch (error) {
@@ -178,15 +185,16 @@ async function runRelayer() {
     }
 
     // ===================
-    // BATCH CHECK: Check all known subscriptions
+    // BATCH CHECK: Use WebSocket for checkUpkeep (read-only)
     // ===================
     if (subIdsToWatch.length > 0) {
-        console.log(`Checking ${subIdsToWatch.length} known subscriptions via checkUpkeep...`);
+        const usingWs = wsProvider ? '(via WebSocket)' : '(via HTTP)';
+        console.log(`Checking ${subIdsToWatch.length} known subscriptions via checkUpkeep ${usingWs}...`);
         try {
-            const dueIds = await contract.checkUpkeep(subIdsToWatch);
+            const dueIds = await wsReadContract.checkUpkeep(subIdsToWatch);
 
             if (dueIds.length > 0) {
-                console.log(`⚡ Found ${dueIds.length} due subscriptions! Executing payments...`);
+                console.log(`⚡ Found ${dueIds.length} due subscriptions! Executing payments (via HTTP)...`);
                 for (const subId of dueIds) {
                     // Skip if already in retry queue (don't double-attempt)
                     if (failedPayments[subId] && failedPayments[subId].nextRetry > now) {
@@ -195,7 +203,7 @@ async function runRelayer() {
 
                     process.stdout.write(`- Paying Sub ${subId.slice(0, 10)}... `);
                     try {
-                        const tx = await contract.executePayment(subId);
+                        const tx = await httpContract.executePayment(subId);
                         console.log(`SUCCESS! Hash: ${tx.hash}`);
                         clearFailure(failedPayments, subId);
                     } catch (error) {
@@ -210,6 +218,7 @@ async function runRelayer() {
             console.error("Method checkUpkeep failed:", e.message.slice(0, 100));
         }
     }
+
 
     // ===================
     // SCAN: Look for new subscriptions (10-block chunks for Alchemy free tier)
