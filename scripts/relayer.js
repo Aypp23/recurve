@@ -212,12 +212,16 @@ async function runRelayer() {
     }
 
     // ===================
-    // SCAN: Block scanning disabled (Alchemy free tier has 10-block limit)
-    // Subscriptions are still processed via checkUpkeep() above
+    // SCAN: Look for new subscriptions (10-block chunks for Alchemy free tier)
     // ===================
-    // Note: If you upgrade Alchemy or use a different RPC, you can re-enable this:
-    /*
     let currentBlock = await provider.getBlockNumber();
+
+    // If no saved block, start from recent (not from deployment block which is too far back)
+    if (startBlock < currentBlock - 1000) {
+        startBlock = currentBlock - 100; // Start from last 100 blocks
+        console.log(`Starting fresh scan from block ${startBlock}`);
+    }
+
     if (startBlock > currentBlock) {
         console.log(`No new blocks to scan.`);
         return;
@@ -243,7 +247,6 @@ async function runRelayer() {
             break;
         }
     }
-    */
 
     // Log retry queue status
     const pendingRetries = Object.values(failedPayments).filter(d => d.status !== 'churned').length;
