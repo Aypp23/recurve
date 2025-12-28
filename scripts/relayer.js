@@ -223,7 +223,7 @@ async function runRelayer() {
     // ===================
     // SCAN: Look for new subscriptions (10-block chunks for Alchemy free tier)
     // ===================
-    let currentBlock = await provider.getBlockNumber();
+    let currentBlock = await httpProvider.getBlockNumber();
 
     // If no saved block, start from recent (not from deployment block which is too far back)
     if (startBlock < currentBlock - 1000) {
