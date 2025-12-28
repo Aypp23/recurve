@@ -383,7 +383,7 @@ export default function CheckoutPage() {
         console.log("DEBUG: Registry Smart Wallet Address:", smartWalletAddress);
 
         // 2. Setup Authenticated Pimlico Client
-        const pimlicoApiKey = "pim_V2cp4b4fQ6JTt5yKxBq2vm"; // Using value from .env
+        const pimlicoApiKey = process.env.NEXT_PUBLIC_PIMLICO_API_KEY || "";
         const pimlicoUrl = `https://api.pimlico.io/v2/5042002/rpc?apikey=${pimlicoApiKey}`;
 
         const publicClient = createPublicClient({
@@ -479,7 +479,7 @@ export default function CheckoutPage() {
       const accountObj = (smartWalletClient as any).account;
       if (!accountObj) throw new Error("No account found on client.");
 
-      const pimlicoApiKey = "pim_V2cp4b4fQ6JTt5yKxBq2vm";
+      const pimlicoApiKey = process.env.NEXT_PUBLIC_PIMLICO_API_KEY || "";
       const pimlicoUrl = `https://api.pimlico.io/v2/5042002/rpc?apikey=${pimlicoApiKey}`;
 
       const publicClient = createPublicClient({ chain: arcTestnet, transport: http() });
