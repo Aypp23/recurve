@@ -238,12 +238,14 @@ async function runRelayer() {
 
     console.log(`Scanning blocks ${startBlock} to ${currentBlock} for new events...`);
 
-    const CHUNK_SIZE = 500; // Safe limit for WebSocket with filtered queries
+    const CHUNK_SIZE = 500; // WebSocket supports 500+ blocks with filtered queries
     for (let i = startBlock; i <= currentBlock; i += CHUNK_SIZE) {
         const toBlock = Math.min(i + CHUNK_SIZE - 1, currentBlock);
         try {
-            const filter = httpContract.filters.SubscriptionCreated();
-            const events = await httpContract.queryFilter(filter, i, toBlock);
+            // Use WebSocket for faster scanning (falls back to HTTP if ws not ready)
+            const scanContract = wsProvider ? wsReadContract : httpContract;
+            const filter = scanContract.filters.SubscriptionCreated();
+            const events = await scanContract.queryFilter(filter, i, toBlock);
             if (events.length > 0) {
                 const discoveredIds = events.map(e => e.args.subId);
                 console.log(`  Found ${discoveredIds.length} new sub(s) at block ${i}`);
