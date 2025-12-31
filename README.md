@@ -1,7 +1,9 @@
 # Recurve
 
 **On-chain subscription payments powered by smart accounts on Arc Network.**
+
 link: arcrecurve.vercel.app
+
 Recurve enables seamless, recurring crypto payments using smart account technology. Users authorize once, and the relayer automatically processes payments on schedule.
 
 ## Features
